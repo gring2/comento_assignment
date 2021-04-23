@@ -8,6 +8,7 @@ use App\Models\Post;
 use App\Models\User;
 use App\ViewModel\WritePostViewModel;
 use App\Repository\PostRepository;
+use Illuminate\Database\Eloquent\Model;
 
 class WriteUseCase
 {
@@ -21,14 +22,18 @@ class WriteUseCase
 
     public function invoke(PostInputBoundary $boundary): WritePostViewModel
     {
-        $user = $boundary->getUser();
+        try {
+            $user = $boundary->getUser();
 
-        $title = $boundary->get('title');
-        $body = $boundary->get('body');
+            $title = $boundary->get('title');
+            $body = $boundary->get('body');
 
-        $post = new Post(['title' => $title, 'body' => $body]);
+            $post = new Post(['title' => $title, 'body' => $body]);
 
-        $valid = $this->validate($user, $post);
+            $valid = $this->validate($user, $post);
+        } catch (\TypeError $e) {
+            throw new InvalidWritePostParameterException();
+        }
 
         if (!$valid) {
             throw new InvalidWritePostParameterException();

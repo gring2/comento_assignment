@@ -3,6 +3,7 @@
 namespace Tests\Unit\UseCase\Post;
 
 use App\Http\Requests\WritePostRequest;
+use App\Models\Post;
 use App\Models\User;
 use App\ViewModel\WritePostViewModel;
 use App\ViewModel\WritePostJsonViewModel;
@@ -15,7 +16,9 @@ class WriteUseCaseTest extends TestCase
 {
     public function testInvoke_Return_Presenter()
     {
-        $repository = new PostDBRepository();
+        $repository = \Mockery::mock(PostDBRepository::class);
+        $repository->shouldReceive('save')->andReturn(Post::factory()->make());
+
         $presenter = new WritePostJsonViewModel();
 
         $inputBoundary = new WritePostRequest(['title' => 'title', 'body' => 'body']);
@@ -71,7 +74,7 @@ class WriteUseCaseTest extends TestCase
         $this->expectExceptionMessage("fail to save post user: 100, title: title, body: body");
 
         $repository = \Mockery::mock(PostDBRepository::class);
-        $repository->shouldReceive('write')->andReturn(false);
+        $repository->shouldReceive('save')->andReturn(false);
 
         $presenter = new WritePostJsonViewModel();
 
