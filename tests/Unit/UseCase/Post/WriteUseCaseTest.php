@@ -8,8 +8,8 @@ use App\Models\User;
 use App\ViewModel\WritePostViewModel;
 use App\ViewModel\WritePostJsonViewModel;
 use App\Repository\PostDBRepository;
-use App\UserCase\Post\InvalidWritePostParameterException;
 use App\UserCase\Post\WriteUseCase;
+use InvalidArgumentException;
 use Tests\TestCase;
 
 class WriteUseCaseTest extends TestCase
@@ -19,7 +19,7 @@ class WriteUseCaseTest extends TestCase
         $repository = \Mockery::mock(PostDBRepository::class);
         $repository->shouldReceive('save')->andReturn(Post::factory()->make());
 
-        $presenter = new WritePostJsonViewModel();
+        $viewModel = new WritePostJsonViewModel();
 
         $inputBoundary = new WritePostRequest(['title' => 'title', 'body' => 'body']);
 
@@ -27,7 +27,7 @@ class WriteUseCaseTest extends TestCase
             return new User();
         });
 
-        $useCase = new WriteUseCase($repository, $presenter);
+        $useCase = new WriteUseCase($repository, $viewModel);
 
         $result = $useCase->invoke($inputBoundary);
 
@@ -36,9 +36,9 @@ class WriteUseCaseTest extends TestCase
 
     public function testInvoke_Throw_InvalidWritePostParameterException_When_Post_has_invalid_Param()
     {
-        $this->expectException(InvalidWritePostParameterException::class);
+        $this->expectException(InvalidArgumentException::class);
         $repository = new PostDBRepository();
-        $presenter = new WritePostJsonViewModel();
+        $viewModel = new WritePostJsonViewModel();
 
         $inputBoundary = new WritePostRequest();
 
@@ -46,16 +46,16 @@ class WriteUseCaseTest extends TestCase
             return new User();
         });
 
-        $useCase = new WriteUseCase($repository, $presenter);
+        $useCase = new WriteUseCase($repository, $viewModel);
 
         $useCase->invoke($inputBoundary);
     }
 
     public function testInvoke_Throw_InvalidWritePostParameterException_When_null_user()
     {
-        $this->expectException(InvalidWritePostParameterException::class);
+        $this->expectException(InvalidArgumentException::class);
         $repository = new PostDBRepository();
-        $presenter = new WritePostJsonViewModel();
+        $viewModel = new WritePostJsonViewModel();
 
         $inputBoundary = new WritePostRequest(['title' => 'title', 'body' => 'body']);
 
@@ -63,7 +63,7 @@ class WriteUseCaseTest extends TestCase
             return null;
         });
 
-        $useCase = new WriteUseCase($repository, $presenter);
+        $useCase = new WriteUseCase($repository, $viewModel);
 
         $useCase->invoke($inputBoundary);
     }
@@ -76,7 +76,7 @@ class WriteUseCaseTest extends TestCase
         $repository = \Mockery::mock(PostDBRepository::class);
         $repository->shouldReceive('save')->andReturn(false);
 
-        $presenter = new WritePostJsonViewModel();
+        $viewModel = new WritePostJsonViewModel();
 
         $inputBoundary = new WritePostRequest(['title' => 'title', 'body' => 'body']);
 
@@ -87,7 +87,7 @@ class WriteUseCaseTest extends TestCase
             return $user;
         });
 
-        $useCase = new WriteUseCase($repository, $presenter);
+        $useCase = new WriteUseCase($repository, $viewModel);
 
         $useCase->invoke($inputBoundary);
     }

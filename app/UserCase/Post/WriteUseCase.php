@@ -8,16 +8,16 @@ use App\Models\Post;
 use App\Models\User;
 use App\ViewModel\WritePostViewModel;
 use App\Repository\PostRepository;
-use Illuminate\Database\Eloquent\Model;
+use InvalidArgumentException;
 
 class WriteUseCase
 {
     private $repository;
-    private $presenter;
-    public function __construct(PostRepository $repository, WritePostViewModel $presenter)
+    private $viewModel;
+    public function __construct(PostRepository $repository, WritePostViewModel $viewModel)
     {
         $this->repository = $repository;
-        $this->presenter = $presenter;
+        $this->viewModel = $viewModel;
     }
 
     public function invoke(PostInputBoundary $boundary): WritePostViewModel
@@ -32,11 +32,11 @@ class WriteUseCase
 
             $valid = $this->validate($user, $post);
         } catch (\TypeError $e) {
-            throw new InvalidWritePostParameterException();
+            throw new InvalidArgumentException();
         }
 
         if (!$valid) {
-            throw new InvalidWritePostParameterException();
+            throw new InvalidArgumentException();
         }
 
         $saved = $this->repository->save($user, $post);
@@ -45,9 +45,9 @@ class WriteUseCase
             throw new \Exception("fail to save post user: {$user->id}, title: {$post->title}, body: {$post->body}");
         }
 
-        $this->presenter->load($saved);
+        $this->viewModel->load($saved);
 
-        return $this->presenter;
+        return $this->viewModel;
     }
 
     private function validate(User $user, Post $post)
