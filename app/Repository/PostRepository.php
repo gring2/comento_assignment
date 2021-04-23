@@ -15,4 +15,6 @@ interface PostRepository
      * @return mixed bool|Post
      */
     public function save(User $user, Post $post);
+
+    public function get(User $user, $id);
 }
