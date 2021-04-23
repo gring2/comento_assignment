@@ -12,20 +12,35 @@ class AuthControllerTest extends TestCase
 
     public function testRegisterLogin()
     {
-        $resp = $this->post(route('api.register'), ['name'=> 'test', 'email'=> 'email@test.com',
+        $resp = $this->postJson(route('api.register'), ['name'=> 'test', 'email'=> 'email@test.com',
                             'password'=> 'password', 'password_confirmation'=> 'password']);
         $resp->assertSuccessful();
         $resp->assertJsonStructure(['token']);
 
-        $emailLoginResp =  $this->post(route('api.login'), ['email'=> 'email@test.com',
+        $emailLoginResp =  $this->postJson(route('api.login'), ['email'=> 'email@test.com',
             'password'=> 'password']);
         $emailLoginResp->assertSuccessful();
         $emailLoginResp->assertJsonStructure(['token']);
 
-        $nameLoginResp =  $this->post(route('api.login'), ['name'=> 'test',
+        $nameLoginResp =  $this->postJson(route('api.login'), ['name'=> 'test',
             'password'=> 'password']);
 
         $nameLoginResp->assertSuccessful();
         $nameLoginResp->assertJsonStructure(['token']);
+    }
+
+    public function testAuth()
+    {
+        $fail = $this->getJson(route('api.test'));
+        $fail->assertUnauthorized();
+
+        $singUp = $this->postJson(route('api.register'), ['name'=> 'test', 'email'=> 'email@test.com',
+            'password'=> 'password', 'password_confirmation'=> 'password']);
+
+        $token = $singUp->decodeResponseJson()['token'];
+
+        $success = $this->withHeader('Authorization', 'Bearer ' . $token)->getJson(route('api.test'));
+
+        $success->assertSuccessful();
     }
 }

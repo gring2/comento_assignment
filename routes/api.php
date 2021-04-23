@@ -18,3 +18,7 @@ use App\Http\Controllers\Auth\AuthController;
 Route::post('/auth/register', [AuthController::class, 'register'])->name('api.register');
 
 Route::post('/auth/login', [AuthController::class, 'login'])->name('api.login');
+
+Route::get('/test_auth', function () {
+    return 'ping';
+})->middleware('auth:sanctum')->name('api.test');

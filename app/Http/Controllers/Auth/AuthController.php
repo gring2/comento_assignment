@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Exceptions\UnAuthorizedException;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Models\User;
@@ -20,18 +21,18 @@ class AuthController extends Controller
         ]);
 
         return [
-            'token' => $user->createToken('API Token')->plainTextToken
+            'token' => $user->createToken($request->get('email'))->plainTextToken
         ];
     }
 
     public function login(LoginRequest $request)
     {
         if (!Auth::attempt($request->all())) {
-            return $this->error('Credentials not match', 401);
+            throw new UnAuthorizedException();
         }
 
         return [
-            'token' => auth()->user()->createToken('API Token')->plainTextToken
+            'token' =>  $request->user()->createToken($request->user()->email)->plainTextToken
         ];
     }
 }
