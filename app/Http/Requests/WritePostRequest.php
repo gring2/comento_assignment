@@ -20,7 +20,7 @@ class WritePostRequest extends FormRequest implements PostInputBoundary
      */
     public function authorize()
     {
-        return false;
+        return $this->user() != null;
     }
 
     /**
@@ -31,7 +31,8 @@ class WritePostRequest extends FormRequest implements PostInputBoundary
     public function rules()
     {
         return [
-            //
+            'title' => 'required|string|max:255',
+            'body' => 'required|string',
         ];
     }
 

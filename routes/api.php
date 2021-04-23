@@ -22,3 +22,7 @@ Route::post('/auth/login', [AuthController::class, 'login'])->name('api.login');
 Route::get('/test_auth', function () {
     return 'ping';
 })->middleware('auth:sanctum')->name('api.test');
+
+Route::name('api.')->middleware('auth:sanctum')->group(function() {
+    Route::resource('post', \App\Http\Controllers\PostController::class);
+});

@@ -9,7 +9,7 @@ use App\Models\Post;
 class WritePostJsonViewModel implements WritePostViewModel
 {
     private $post;
-    public function toJson()
+    public function toJson(): array
     {
         return ['post_id' => $this->post->id];
     }
