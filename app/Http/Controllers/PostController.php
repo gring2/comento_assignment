@@ -41,7 +41,7 @@ class PostController extends Controller
         //
         $result = $useCase->invoke($request);
 
-        return response()->json($result->toJson(), 200);
+        return response()->json($result->display(), 200);
     }
 
     /**
