@@ -9,5 +9,10 @@ use App\Models\User;
 
 interface PostRepository
 {
-    public function write(User $user, Post $post): bool;
+    /***
+     * @param User $user
+     * @param Post $post
+     * @return mixed bool|Post
+     */
+    public function save(User $user, Post $post);
 }

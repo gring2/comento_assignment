@@ -34,7 +34,7 @@ class WriteUseCase
             throw new InvalidWritePostParameterException();
         }
 
-        $save = $this->repository->write($user, $post);
+        $save = $this->repository->save($user, $post);
 
         if (!$save) {
             throw new \Exception("fail to save post user: {$user->id}, title: {$post->title}, body: {$post->body}");

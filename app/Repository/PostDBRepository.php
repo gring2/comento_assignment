@@ -9,9 +9,8 @@ use App\Models\User;
 
 class PostDBRepository implements PostRepository
 {
-
-    public function write(User $user, Post $post): bool
+    public function save(User $user, Post $post)
     {
-        return true;
+        return $user->posts()->save($post);
     }
 }
