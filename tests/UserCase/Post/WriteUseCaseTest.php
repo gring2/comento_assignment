@@ -5,7 +5,7 @@ namespace Tests\UserCase\Post;
 use App\Http\Requests\WritePostRequest;
 use App\Models\User;
 use App\Presenter\WritePostPresenter;
-use App\Presenter\WritePostJsonWritePostPresenter;
+use App\Presenter\WritePostJsonPresenter;
 use App\Repository\PostDBRepository;
 use App\UserCase\Post\InvalidWritePostParameterException;
 use App\UserCase\Post\WriteUseCase;
@@ -16,7 +16,7 @@ class WriteUseCaseTest extends TestCase
     public function testInvoke_Return_Presenter()
     {
         $repository = new PostDBRepository();
-        $presenter = new WritePostJsonWritePostPresenter();
+        $presenter = new WritePostJsonPresenter();
 
         $inputBoundary = new WritePostRequest(['title' => 'title', 'body' => 'body']);
 
@@ -35,7 +35,7 @@ class WriteUseCaseTest extends TestCase
     {
         $this->expectException(InvalidWritePostParameterException::class);
         $repository = new PostDBRepository();
-        $presenter = new WritePostJsonWritePostPresenter();
+        $presenter = new WritePostJsonPresenter();
 
         $inputBoundary = new WritePostRequest();
 
@@ -52,7 +52,7 @@ class WriteUseCaseTest extends TestCase
     {
         $this->expectException(InvalidWritePostParameterException::class);
         $repository = new PostDBRepository();
-        $presenter = new WritePostJsonWritePostPresenter();
+        $presenter = new WritePostJsonPresenter();
 
         $inputBoundary = new WritePostRequest(['title' => 'title', 'body' => 'body']);
 
@@ -73,7 +73,7 @@ class WriteUseCaseTest extends TestCase
         $repository = \Mockery::mock(PostDBRepository::class);
         $repository->shouldReceive('write')->andReturn(false);
 
-        $presenter = new WritePostJsonWritePostPresenter();
+        $presenter = new WritePostJsonPresenter();
 
         $inputBoundary = new WritePostRequest(['title' => 'title', 'body' => 'body']);
 
