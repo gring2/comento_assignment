@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\UserCase\Post;
+namespace Tests\Unit\UseCase\Post;
 
 use App\Http\Requests\WritePostRequest;
 use App\Models\User;
