@@ -4,8 +4,8 @@ namespace Tests\Unit\UseCase\Post;
 
 use App\Http\Requests\WritePostRequest;
 use App\Models\User;
-use App\Presenter\WritePostPresenter;
-use App\Presenter\WritePostJsonPresenter;
+use App\ViewModel\WritePostViewModel;
+use App\ViewModel\WritePostJsonViewModel;
 use App\Repository\PostDBRepository;
 use App\UserCase\Post\InvalidWritePostParameterException;
 use App\UserCase\Post\WriteUseCase;
@@ -16,7 +16,7 @@ class WriteUseCaseTest extends TestCase
     public function testInvoke_Return_Presenter()
     {
         $repository = new PostDBRepository();
-        $presenter = new WritePostJsonPresenter();
+        $presenter = new WritePostJsonViewModel();
 
         $inputBoundary = new WritePostRequest(['title' => 'title', 'body' => 'body']);
 
@@ -28,14 +28,14 @@ class WriteUseCaseTest extends TestCase
 
         $result = $useCase->invoke($inputBoundary);
 
-        $this->assertInstanceOf(WritePostPresenter::class, $result);
+        $this->assertInstanceOf(WritePostViewModel::class, $result);
     }
 
     public function testInvoke_Throw_InvalidWritePostParameterException_When_Post_has_invalid_Param()
     {
         $this->expectException(InvalidWritePostParameterException::class);
         $repository = new PostDBRepository();
-        $presenter = new WritePostJsonPresenter();
+        $presenter = new WritePostJsonViewModel();
 
         $inputBoundary = new WritePostRequest();
 
@@ -52,7 +52,7 @@ class WriteUseCaseTest extends TestCase
     {
         $this->expectException(InvalidWritePostParameterException::class);
         $repository = new PostDBRepository();
-        $presenter = new WritePostJsonPresenter();
+        $presenter = new WritePostJsonViewModel();
 
         $inputBoundary = new WritePostRequest(['title' => 'title', 'body' => 'body']);
 
@@ -73,7 +73,7 @@ class WriteUseCaseTest extends TestCase
         $repository = \Mockery::mock(PostDBRepository::class);
         $repository->shouldReceive('write')->andReturn(false);
 
-        $presenter = new WritePostJsonPresenter();
+        $presenter = new WritePostJsonViewModel();
 
         $inputBoundary = new WritePostRequest(['title' => 'title', 'body' => 'body']);
 

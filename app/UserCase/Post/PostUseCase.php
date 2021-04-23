@@ -5,9 +5,9 @@ namespace App\UserCase\Post;
 
 
 use App\Boundaries\PostInputBoundary;
-use App\Presenter\WritePostPresenter;
+use App\ViewModel\WritePostViewModel;
 
 interface PostUseCase
 {
-    public function invoke(PostInputBoundary $boundary): WritePostPresenter;
+    public function invoke(PostInputBoundary $boundary): WritePostViewModel;
 }

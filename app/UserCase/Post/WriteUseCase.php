@@ -6,20 +6,20 @@ namespace App\UserCase\Post;
 use App\Boundaries\PostInputBoundary;
 use App\Models\Post;
 use App\Models\User;
-use App\Presenter\WritePostPresenter;
+use App\ViewModel\WritePostViewModel;
 use App\Repository\PostRepository;
 
 class WriteUseCase
 {
     private $repository;
     private $presenter;
-    public function __construct(PostRepository $repository, WritePostPresenter $presenter)
+    public function __construct(PostRepository $repository, WritePostViewModel $presenter)
     {
         $this->repository = $repository;
         $this->presenter = $presenter;
     }
 
-    public function invoke(PostInputBoundary $boundary): WritePostPresenter
+    public function invoke(PostInputBoundary $boundary): WritePostViewModel
     {
         $user = $boundary->getUser();
 
@@ -34,11 +34,13 @@ class WriteUseCase
             throw new InvalidWritePostParameterException();
         }
 
-        $save = $this->repository->save($user, $post);
+        $saved = $this->repository->save($user, $post);
 
-        if (!$save) {
+        if (!$saved) {
             throw new \Exception("fail to save post user: {$user->id}, title: {$post->title}, body: {$post->body}");
         }
+
+        $this->presenter->load($saved);
 
         return $this->presenter;
     }
