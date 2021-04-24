@@ -55,4 +55,13 @@ class PostApiTest extends TestCase
             ]
         ]);
     }
+
+    public function testGetPost404IfNotExist()
+    {
+        $usr = User::factory()->create();
+
+        $resp = $this->actingAs($usr)->getJson(route('api.post.show', 2000));
+
+        $resp->assertNotFound();
+    }
 }

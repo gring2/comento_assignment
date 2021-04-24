@@ -32,9 +32,5 @@ class DiServiceProvider extends ServiceProvider
         $this->app->bind(WriteUseCase::class, function () {
             return new WriteUseCase(new PostDBRepository(), new WritePostJsonViewModel());
         });
-
-        $this->app->bind(GetUseCase::class, function () {
-            return new GetUseCase(new PostDBRepository(), new GetPostJsonViewModel());
-        });
     }
 }

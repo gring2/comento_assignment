@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Boundaries\GetPostBoundary;
 use App\Http\Requests\WritePostRequest;
 use App\Models\Post;
-use App\UserCase\Post\GetUseCase;
 use App\UserCase\Post\WriteUseCase;
+use App\ViewModel\GetPostJsonViewModel;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -50,17 +49,16 @@ class PostController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param Post $post
+     * @param GetPostJsonViewModel $viewModel
      * @return JsonResponse
      */
-    public function show($id, GetUseCase $useCase)
+    public function show(Post $post, GetPostJsonViewModel $viewModel)
     {
         //
 
-        $input = new GetPostBoundary($id);
-        $result = $useCase->invoke($input);
-
-        return response()->json($result->display(), 200);
+        $viewModel->load($post);
+        return response()->json($viewModel->display(), 200);
     }
 
     /**
@@ -92,7 +90,7 @@ class PostController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function destroy(Request $request, Post $post)
+    public function destroy(Request $request, Post $post, DestroyPostUseCase $useCase)
     {
         //
     }
