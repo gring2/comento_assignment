@@ -32,8 +32,8 @@ class PostController extends Controller
     {
         //
         $result = $useCase->invoke($request->get('per_page'));
-        return response()->json($result->display(), 200);
 
+        return response()->json($result->display(), 200);
     }
     /**
      * Store a newly created resource in storage.

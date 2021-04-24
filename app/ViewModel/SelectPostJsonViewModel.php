@@ -33,7 +33,11 @@ class SelectPostJsonViewModel implements SelectPostViewModel
                 'created_at' => $item->created_at->format('Y-m-d H:i:s'),
                 'updated_at' => $item->created_at->format('Y-m-d H:i:s'),
 
-                'author' => $item->author
+                'author' => [
+                    'id' => $item->author->id,
+                    'name' => $item->author->name,
+                    'email' => $item->author->email,
+                ]
             ];
         });
     }
