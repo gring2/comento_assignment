@@ -1,6 +1,6 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\PostController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
 
@@ -23,6 +23,6 @@ Route::get('/test_auth', function () {
     return 'ping';
 })->middleware('auth:sanctum')->name('api.test');
 
-Route::name('api.')->middleware('auth:sanctum')->group(function() {
-    Route::resource('post', \App\Http\Controllers\PostController::class);
+Route::name('api.')->middleware('auth:sanctum')->group(function () {
+    Route::resource('post', PostController::class);
 });
