@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Boundaries\DestroyPostInputBoundary;
+use App\Boundaries\UpdatePostInputBoundary;
+use App\Http\Requests\UpdatePostRequest;
 use App\Http\Requests\WritePostRequest;
 use App\Models\Post;
-use App\UserCase\Post\DestroyPostUseCase;
+use App\UserCase\Post\DestroyUseCase;
+use App\UserCase\Post\UpdateUseCase;
 use App\UserCase\Post\WriteUseCase;
 use App\ViewModel\GetPostJsonViewModel;
 use Illuminate\Http\JsonResponse;
@@ -28,22 +31,13 @@ class PostController extends Controller
     {
         //
     }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return Response
-     */
-    public function create()
-    {
-        //
-    }
-
     /**
      * Store a newly created resource in storage.
      *
-     * @param Request $request
+     * @param WritePostRequest $request
+     * @param WriteUseCase $useCase
      * @return JsonResponse
+     * @throws \Exception
      */
     public function store(WritePostRequest $request, WriteUseCase $useCase)
     {
@@ -82,22 +76,32 @@ class PostController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param Request $request
-     * @param  int  $id
-     * @return Response
+     * @param UpdatePostRequest $request
+     * @param UpdateUseCase $useCase
+     * @return JsonResponse
+     * @throws \Exception
      */
-    public function update(Request $request, $id)
+    public function update(UpdatePostRequest $request, Post $post, UpdateUseCase $useCase)
     {
         //
+        $post->title = $request->get('title');
+        $post->body = $request->get('body');
+
+        $input = new UpdatePostInputBoundary($request->user(), $post);
+        $result = $useCase->invoke($input);
+
+        return response()->json($result->display(), 200);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param Request $request
+     * @param Post $post
+     * @param DestroyUseCase $useCase
      * @return JsonResponse
      */
-    public function destroy(Request $request, Post $post, DestroyPostUseCase $useCase)
+    public function destroy(Request $request, Post $post, DestroyUseCase $useCase)
     {
         $input = new DestroyPostInputBoundary($request->user(), $post);
         $result = $useCase->invoke($input);

@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\UnauthorizedException;
 
-class DestroyPostUseCase
+class DestroyUseCase
 {
     private $repository;
     private $viewModel;

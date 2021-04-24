@@ -9,7 +9,7 @@ use App\Boundaries\PostInputBoundary;
 use App\Models\Post;
 use App\Models\User;
 use App\Repository\PostDBRepository;
-use App\UserCase\Post\DestroyPostUseCase;
+use App\UserCase\Post\DestroyUseCase;
 use App\ViewModel\DestroyPostJsonViewModel;
 use App\ViewModel\DestroyPostViewModel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -29,7 +29,7 @@ class DestroyUseCaseTest extends TestCase
 
         $inputBoundary = new DestroyPostInputBoundary(new User(), $post);
 
-        $useCase = new DestroyPostUseCase($repository, $viewModel);
+        $useCase = new DestroyUseCase($repository, $viewModel);
 
         $result = $useCase->invoke($inputBoundary);
 
@@ -48,7 +48,7 @@ class DestroyUseCaseTest extends TestCase
 
         $inputBoundary = new DestroyPostInputBoundary(new User(), $post);
 
-        $useCase = new DestroyPostUseCase($repository, $viewModel);
+        $useCase = new DestroyUseCase($repository, $viewModel);
 
         $useCase->invoke($inputBoundary);
     }
@@ -66,7 +66,7 @@ class DestroyUseCaseTest extends TestCase
         $inputBoundary->shouldReceive('get')->withArgs(['post'])->andReturn(null);
         $inputBoundary->shouldReceive('getUser')->andReturn(new User());
 
-        $useCase = new DestroyPostUseCase($repository, $viewModel);
+        $useCase = new DestroyUseCase($repository, $viewModel);
 
         $useCase->invoke($inputBoundary);
     }
@@ -84,7 +84,7 @@ class DestroyUseCaseTest extends TestCase
         $inputBoundary->shouldReceive('get')->withArgs(['post'])->andReturn(new Post());
         $inputBoundary->shouldReceive('getUser')->andReturn(null);
 
-        $useCase = new DestroyPostUseCase($repository, $viewModel);
+        $useCase = new DestroyUseCase($repository, $viewModel);
 
         $useCase->invoke($inputBoundary);
     }

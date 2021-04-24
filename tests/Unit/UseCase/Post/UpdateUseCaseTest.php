@@ -2,13 +2,13 @@
 
 namespace Tests\Unit\UseCase\Post;
 
-use App\Http\Requests\UpdatePostRequest;
+use App\Boundaries\UpdatePostInputBoundary;
+use App\Models\Post;
 use App\Models\User;
 use App\UserCase\Post\UpdateUseCase;
 use App\ViewModel\UpdatePostJsonViewModel;
 use App\Repository\PostDBRepository;
 use Illuminate\Validation\UnauthorizedException;
-use InvalidArgumentException;
 use Tests\TestCase;
 
 class UpdateUseCaseTest extends TestCase
@@ -20,11 +20,10 @@ class UpdateUseCaseTest extends TestCase
 
         $viewModel = new UpdatePostJsonViewModel();
 
-        $inputBoundary = new UpdatePostRequest(['title' => 'title', 'body' => 'body', 'id' => 1]);
+        $post = new Post(['title' => 'title', 'body' => 'body', 'id' => 1]);
+        $user =  new User();
 
-        $inputBoundary->setUserResolver(function () {
-            return new User();
-        });
+        $inputBoundary = new UpdatePostInputBoundary($user, $post);
 
         $useCase = new UpdateUseCase($repository, $viewModel);
 
@@ -33,17 +32,17 @@ class UpdateUseCaseTest extends TestCase
         $this->assertInstanceOf(UpdatePostJsonViewModel::class, $result);
     }
 
-    public function testInvoke_Throw_InvalidArgumentException_When_Post_has_invalid_Param()
+    public function testInvoke_Do_not_execute_sql_If_Title_and_Body_are_null()
     {
-        $this->expectException(InvalidArgumentException::class);
-        $repository = new PostDBRepository();
+        $repository = \Mockery::mock(PostDBRepository::class);
+        $repository->shouldNotReceive('update')->andReturn(true);
+
         $viewModel = new UpdatePostJsonViewModel();
 
-        $inputBoundary = new UpdatePostRequest();
+        $post = new Post();
+        $user =  new User();
 
-        $inputBoundary->setUserResolver(function () {
-            return new User();
-        });
+        $inputBoundary = new UpdatePostInputBoundary($user, $post);
 
         $useCase = new UpdateUseCase($repository, $viewModel);
 
@@ -56,11 +55,12 @@ class UpdateUseCaseTest extends TestCase
         $repository = new PostDBRepository();
         $viewModel = new UpdatePostJsonViewModel();
 
-        $inputBoundary = new UpdatePostRequest(['title' => 'title', 'body' => 'body', 'id' => 1]);
+        $post = new Post(['title' => 'title', 'body' => 'body']);
+        $post->setAttribute('id', 1);
 
-        $inputBoundary->setUserResolver(function () {
-            return null;
-        });
+        $user =  null;
+
+        $inputBoundary = new UpdatePostInputBoundary($user, $post);
 
         $useCase = new UpdateUseCase($repository, $viewModel);
 
@@ -77,14 +77,13 @@ class UpdateUseCaseTest extends TestCase
 
         $viewModel = new UpdatePostJsonViewModel();
 
-        $inputBoundary = new UpdatePostRequest(['title' => 'title', 'body' => 'body', 'id' => 1]);
+        $post = new Post(['title' => 'title', 'body' => 'body']);
+        $post->setAttribute('id', 1);
 
-        $inputBoundary->setUserResolver(function () {
-            $user = new User();
-            $user->setAttribute('id', 100);
+        $user =  new User();
+        $user->setAttribute('id', 100);
 
-            return $user;
-        });
+        $inputBoundary = new UpdatePostInputBoundary($user, $post);
 
         $useCase = new UpdateUseCase($repository, $viewModel);
 

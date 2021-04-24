@@ -42,14 +42,8 @@ class UpdateUseCase
             throw new InvalidArgumentException();
         }
 
-        if (!$valid) {
-            throw new InvalidArgumentException();
-        }
-
-        $saved = $this->repository->update($user, $post_id, $newPost);
-
-        if (!$saved) {
-            throw new \Exception("fail to update post user: {$user->id}, id: {$post_id}, title: {$title}, body: {$body}");
+        if ($valid) {
+            $this->saveChange($user, $post_id, $newPost);
         }
 
         $newPost->id = $post_id;
@@ -60,10 +54,19 @@ class UpdateUseCase
 
     private function validate(Post $post)
     {
-        if ($post->title == null || $post->body == null) {
+        if ($post->title == null && $post->body == null) {
             return false;
         }
 
         return true;
+    }
+
+    private function saveChange($user, $post_id, $newPost)
+    {
+        $saved = $this->repository->update($user, $post_id, $newPost);
+
+        if (!$saved) {
+            throw new \Exception("fail to update post user: {$user->id}, id: {$post_id}, title: {$newPost->title}, body: {$newPost->body}");
+        }
     }
 }

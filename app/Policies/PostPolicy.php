@@ -10,6 +10,7 @@ class PostPolicy
 {
     use HandlesAuthorization;
 
+
     /**
      * Determine whether the user can view any models.
      *
@@ -57,6 +58,7 @@ class PostPolicy
     public function update(User $user, Post $post)
     {
         //
+        return $post->user_id == $user->id;
     }
 
     /**
@@ -82,6 +84,7 @@ class PostPolicy
     public function restore(User $user, Post $post)
     {
         //
+        return true;
     }
 
     /**
