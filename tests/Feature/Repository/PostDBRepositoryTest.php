@@ -15,7 +15,6 @@ class PostDBRepositoryTest extends TestCase
 
     public function testSave()
     {
-
         $user = User::factory()->create();
         $post = Post::factory()->make();
 
@@ -108,5 +107,22 @@ class PostDBRepositoryTest extends TestCase
 
         $this->assertEquals($beforeTitle, $after->title);
         $this->assertEquals($beforeBody, $after->body);
+    }
+
+    public function testSelect_Returns_paginated_collections()
+    {
+        $user = User::factory()->create();
+        $posts = Post::factory()->count(10)->make();
+        $user->posts()->saveMany($posts);
+
+        $user2 = User::factory()->create();
+        $posts = Post::factory()->count(20)->make();
+        $user2->posts()->saveMany($posts);
+
+        $repository = new PostDBRepository();
+
+        $result = $repository->select();
+
+        $this->assertEquals(20, $result->count());
     }
 }

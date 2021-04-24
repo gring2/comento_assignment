@@ -9,6 +9,14 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class PostDBRepository implements PostRepository
 {
+    public function select($perPage = 20)
+    {
+        if (!$perPage) {
+            $perPage = 20;
+        }
+        return Post::paginate($perPage);
+    }
+
     public function save(User $user, Post $post)
     {
         return $user->posts()->save($post);

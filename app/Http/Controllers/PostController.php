@@ -8,6 +8,7 @@ use App\Http\Requests\UpdatePostRequest;
 use App\Http\Requests\WritePostRequest;
 use App\Models\Post;
 use App\UserCase\Post\DestroyUseCase;
+use App\UserCase\Post\SelectUseCase;
 use App\UserCase\Post\UpdateUseCase;
 use App\UserCase\Post\WriteUseCase;
 use App\ViewModel\GetPostJsonViewModel;
@@ -25,11 +26,14 @@ class PostController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @return Response
+     * @return JsonResponse
      */
-    public function index()
+    public function index(Request $request, SelectUseCase $useCase)
     {
         //
+        $result = $useCase->invoke($request->get('per_page'));
+        return response()->json($result->display(), 200);
+
     }
     /**
      * Store a newly created resource in storage.

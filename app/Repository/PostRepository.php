@@ -14,6 +14,8 @@ interface PostRepository
      * @param Post $post
      * @return mixed bool|Post
      */
+    public function select($perPage);
+
     public function save(User $user, Post $post);
 
     public function get($id);

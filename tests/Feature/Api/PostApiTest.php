@@ -151,4 +151,52 @@ class PostApiTest extends TestCase
 
         $resp->assertStatus(403);
     }
+
+    public function testSelectPaginate()
+    {
+        $user = User::factory()->create();
+        $posts = Post::factory()->count(10)->make();
+        $user->posts()->saveMany($posts);
+
+        $user2 = User::factory()->create();
+        $posts = Post::factory()->count(20)->make();
+        $user2->posts()->saveMany($posts);
+
+        $resp = $this->actingAs($user)->getJson(route('api.post.index', []));
+        $resp->assertJsonStructure(['current_page', 'last_page', 'per_page', 'total',
+                                    'data' => [
+                                                ['id', 'title', 'body', 'author']
+                                                ]
+                                    ]);
+        $json1 = $resp->decodeResponseJson();
+
+        $this->assertEquals(1, $json1['current_page']);
+        $this->assertEquals($json1['data'][19]['id'], 20);
+
+        $resp2 = $this->actingAs($user)->getJson(route('api.post.index', ['page' => 2]));
+        $json2 = $resp2->decodeResponseJson();
+
+        $this->assertEquals(2, $json2['current_page']);
+
+        $this->assertEquals($json2['data'][9]['id'], 30);
+    }
+
+    public function testSelect_Paginate_Per_Page()
+    {
+        $user = User::factory()->create();
+        $posts = Post::factory()->count(10)->make();
+        $user->posts()->saveMany($posts);
+
+        $user2 = User::factory()->create();
+        $posts = Post::factory()->count(20)->make();
+        $user2->posts()->saveMany($posts);
+        $resp = $this->actingAs($user)->getJson(route('api.post.index', ['per_page' => 15]));
+        $json = $resp->decodeResponseJson();
+
+        $this->assertEquals(15, $json['per_page']);
+        $resp2 = $this->actingAs($user)->getJson(route('api.post.index', ['per_page' => 20, 'page' => 1]));
+        $json2 = $resp2->decodeResponseJson();
+
+        $this->assertEquals(20, $json2['per_page']);
+    }
 }
