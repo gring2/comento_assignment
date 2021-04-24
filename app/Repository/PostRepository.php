@@ -17,4 +17,6 @@ interface PostRepository
     public function save(User $user, Post $post);
 
     public function get($id);
+
+    public function destroy(Post $post, User $user);
 }

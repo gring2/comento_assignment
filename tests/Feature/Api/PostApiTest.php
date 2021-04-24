@@ -3,9 +3,9 @@
 
 namespace Tests\Feature\Api;
 
-
 use App\Models\Post;
 use App\Models\User;
+use App\UserCase\Post\DestroyPostUseCase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -34,7 +34,7 @@ class PostApiTest extends TestCase
         $resp->assertStatus(422);
     }
 
-    public function testSaveGet()
+    public function testGet()
     {
         $usr = User::factory()->create();
         $post = Post::factory()->make();
@@ -63,5 +63,38 @@ class PostApiTest extends TestCase
         $resp = $this->actingAs($usr)->getJson(route('api.post.show', 2000));
 
         $resp->assertNotFound();
+    }
+
+    public function testDestory()
+    {
+        $usr = User::factory()->create();
+        $post = Post::factory()->make();
+        $usr->posts()->save($post);
+
+        $resp = $this->actingAs($usr)->deleteJson(route('api.post.destroy', $post->id));
+
+        $resp->assertSuccessful();
+        $resp->assertJson([
+            'post_id' => $post->id,
+        ]);
+    }
+
+    public function testDestory_403_If_wrong_relation()
+    {
+        $this->app->bind(DestroyPostUseCase::class, function () {
+            $mock = \Mockery::mock(DestroyPostUseCase::class);
+            $mock->shouldNotReceive('invoke');
+
+            return $mock;
+        });
+
+        $usr = User::factory()->create();
+        $post = Post::factory()->make();
+        $usr->posts()->save($post);
+        $wrongUser = User::factory()->create();
+
+        $resp = $this->actingAs($wrongUser)->deleteJson(route('api.post.destroy', $post->id));
+
+        $resp->assertStatus(403);
     }
 }

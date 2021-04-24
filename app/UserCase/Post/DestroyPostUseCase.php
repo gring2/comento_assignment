@@ -38,7 +38,7 @@ class DestroyPostUseCase
 
         DB::transaction(function () use ($post, $user) {
             $result = $this->repository->destroy($post, $user);
-            if ($result != 1) {
+            if (!$result) {
                 throw new \Exception("Internal exception delete post: {$post->id}, user: {$user->id}");
             }
         });

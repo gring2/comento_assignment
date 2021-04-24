@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Boundaries\DestroyPostInputBoundary;
 use App\Http\Requests\WritePostRequest;
 use App\Models\Post;
+use App\UserCase\Post\DestroyPostUseCase;
 use App\UserCase\Post\WriteUseCase;
 use App\ViewModel\GetPostJsonViewModel;
 use Illuminate\Http\JsonResponse;
@@ -12,6 +14,11 @@ use Illuminate\Http\Response;
 
 class PostController extends Controller
 {
+    public function __construct()
+    {
+        $this->authorizeResource(Post::class);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -88,10 +95,13 @@ class PostController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return Response
+     * @return JsonResponse
      */
     public function destroy(Request $request, Post $post, DestroyPostUseCase $useCase)
     {
-        //
+        $input = new DestroyPostInputBoundary($request->user(), $post);
+        $result = $useCase->invoke($input);
+
+        return response()->json($result->display(), 200);
     }
 }

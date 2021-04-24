@@ -40,4 +40,32 @@ class PostDBRepositoryTest extends TestCase
         $this->assertEquals($post->id, $result->id);
     }
 
+    public function testDestroy()
+    {
+        $user = User::factory()->create();
+        $posts = Post::factory()->count(4)->make();
+        $user->posts()->saveMany($posts);
+
+        $repository = new PostDBRepository();
+        $result = $repository->destroy($posts[0], $user);
+
+        $this->assertEquals(true, $result);
+
+        $this->assertEquals(3, Post::count());
+    }
+
+    public function testDestroy_Return_False_If_Wrong_relation_is_passed()
+    {
+        $user = User::factory()->create();
+        $posts = Post::factory()->count(4)->make();
+        $user->posts()->saveMany($posts);
+        $wronngUser = User::factory()->create();
+
+        $repository = new PostDBRepository();
+        $result = $repository->destroy($posts[0], $wronngUser);
+
+        $this->assertEquals(false, $result);
+
+        $this->assertEquals(4, Post::count());
+    }
 }
