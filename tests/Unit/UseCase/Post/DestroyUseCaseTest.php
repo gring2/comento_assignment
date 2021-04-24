@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Validation\UnauthorizedException;
 use Tests\TestCase;
 
-class DestroyPostUseCaseTest extends TestCase
+class DestroyUseCaseTest extends TestCase
 {
     public function testInvoke_Return_Presenter()
     {
