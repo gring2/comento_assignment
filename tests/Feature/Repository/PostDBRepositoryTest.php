@@ -26,4 +26,18 @@ class PostDBRepositoryTest extends TestCase
         $this->assertEquals(1, $result->id);
         $this->assertEquals($user->id, $result->writer->id);
     }
+
+    public function testGet()
+    {
+        $user = User::factory()->create();
+        $post = Post::factory()->make();
+        $user->posts()->save($post);
+
+        $repository = new PostDBRepository();
+        $result = $repository->get($post->id);
+
+        $this->assertInstanceOf(Post::class, $result);
+        $this->assertEquals($post->id, $result->id);
+    }
+
 }

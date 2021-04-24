@@ -13,4 +13,11 @@ class PostDBRepository implements PostRepository
     {
         return $user->posts()->save($post);
     }
+
+    public function get($id)
+    {
+        return Post::find($id);
+    }
+
+
 }
