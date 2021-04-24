@@ -19,4 +19,7 @@ interface PostRepository
     public function get($id);
 
     public function destroy(Post $post, User $user);
+
+    public function update(User $user, $post_id, Post $post);
+
 }

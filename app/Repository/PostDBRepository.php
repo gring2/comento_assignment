@@ -27,4 +27,11 @@ class PostDBRepository implements PostRepository
             return false;
         }
     }
+
+    public function update(User $user, $post_id, Post $post)
+    {
+        $cnt = $user->posts()->where('id', $post_id)->update($post->getAttributes());
+
+        return $cnt == 1;
+    }
 }
