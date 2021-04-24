@@ -9,6 +9,7 @@ use App\ViewModel\WritePostViewModel;
 use App\ViewModel\WritePostJsonViewModel;
 use App\Repository\PostDBRepository;
 use App\UserCase\Post\WriteUseCase;
+use Illuminate\Validation\UnauthorizedException;
 use InvalidArgumentException;
 use Tests\TestCase;
 
@@ -34,7 +35,7 @@ class WriteUseCaseTest extends TestCase
         $this->assertInstanceOf(WritePostViewModel::class, $result);
     }
 
-    public function testInvoke_Throw_InvalidWritePostParameterException_When_Post_has_invalid_Param()
+    public function testInvoke_Throw_InvalidArgumentException_When_Post_has_invalid_Param()
     {
         $this->expectException(InvalidArgumentException::class);
         $repository = new PostDBRepository();
@@ -51,9 +52,9 @@ class WriteUseCaseTest extends TestCase
         $useCase->invoke($inputBoundary);
     }
 
-    public function testInvoke_Throw_InvalidWritePostParameterException_When_null_user()
+    public function testInvoke_Throw_UnauthorizedException_When_null_user()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(UnauthorizedException::class);
         $repository = new PostDBRepository();
         $viewModel = new WritePostJsonViewModel();
 

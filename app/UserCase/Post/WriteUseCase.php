@@ -8,6 +8,7 @@ use App\Models\Post;
 use App\Models\User;
 use App\ViewModel\WritePostViewModel;
 use App\Repository\PostRepository;
+use Illuminate\Validation\UnauthorizedException;
 use InvalidArgumentException;
 
 class WriteUseCase
@@ -22,15 +23,19 @@ class WriteUseCase
 
     public function invoke(PostInputBoundary $boundary): WritePostViewModel
     {
-        try {
-            $user = $boundary->getUser();
+        $user = $boundary->getUser();
 
+        if (!$user instanceof User) {
+            throw new UnauthorizedException();
+        }
+
+        try {
             $title = $boundary->get('title');
             $body = $boundary->get('body');
 
             $post = new Post(['title' => $title, 'body' => $body]);
 
-            $valid = $this->validate($user, $post);
+            $valid = $this->validate($post);
         } catch (\TypeError $e) {
             throw new InvalidArgumentException();
         }
@@ -50,12 +55,8 @@ class WriteUseCase
         return $this->viewModel;
     }
 
-    private function validate(User $user, Post $post)
+    private function validate(Post $post)
     {
-        if ($user == null) {
-            return false;
-        }
-
         if ($post->title == null || $post->body == null) {
             return false;
         }
