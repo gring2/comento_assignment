@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Boundaries\GetPostBoundary;
 use App\Http\Requests\WritePostRequest;
+use App\Models\Post;
 use App\UserCase\Post\GetUseCase;
 use App\UserCase\Post\WriteUseCase;
 use Illuminate\Http\JsonResponse;
@@ -52,11 +53,11 @@ class PostController extends Controller
      * @param  int  $id
      * @return JsonResponse
      */
-    public function show(Request $request, $id, GetUseCase $useCase)
+    public function show($id, GetUseCase $useCase)
     {
         //
 
-        $input = new GetPostBoundary($request->user(), $id);
+        $input = new GetPostBoundary($id);
         $result = $useCase->invoke($input);
 
         return response()->json($result->display(), 200);
@@ -91,7 +92,7 @@ class PostController extends Controller
      * @param  int  $id
      * @return Response
      */
-    public function destroy($id)
+    public function destroy(Request $request, Post $post)
     {
         //
     }

@@ -10,5 +10,5 @@ interface PostInputBoundary
 {
     public function get(string $name, $default = null);
 
-    public function getUser(): User;
+    public function getUser(): ?User;
 }

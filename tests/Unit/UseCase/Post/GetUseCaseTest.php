@@ -21,7 +21,7 @@ class GetUseCaseTest extends TestCase
         $viewModel = \Mockery::mock(GetPostViewModel::class);
         $viewModel->shouldReceive('load');
 
-        $request = new GetPostBoundary(new User(), '1');
+        $request = new GetPostBoundary('1');
 
         $useCase = new GetUseCase($repository, $viewModel);
 
@@ -34,7 +34,7 @@ class GetUseCaseTest extends TestCase
     public function testInvoke_throw_Model_not_found_Exception()
     {
         $this->expectException(ModelNotFoundException::class);
-        $this->expectExceptionMessage("user: 100 post: 1 is not found");
+        $this->expectExceptionMessage("post: 1 is not found");
 
         $repository = \Mockery::mock(PostRepository::class);
         $repository->shouldReceive('get')->andReturn(null);
@@ -42,7 +42,7 @@ class GetUseCaseTest extends TestCase
 
         $u = new User();
         $u->setAttribute('id', 100);
-        $request = new GetPostBoundary($u, '1');
+        $request = new GetPostBoundary('1');
 
         $useCase = new GetUseCase($repository, $viewModel);
 

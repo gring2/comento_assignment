@@ -22,15 +22,12 @@ class GetUseCase
     }
     public function invoke(PostInputBoundary $boundary): GetPostViewModel
     {
-        // TODO: Implement invoke() method.
-        $user = $boundary->getUser();
-
         $postId = $boundary->get('id');
 
         $post = $this->repository->get($postId);
 
         if (!$post) {
-            throw new ModelNotFoundException("user: {$user->id} post: {$postId} is not found");
+            throw new ModelNotFoundException("post: {$postId} is not found");
         }
 
         $this->viewModel->load($post);

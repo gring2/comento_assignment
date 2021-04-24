@@ -8,11 +8,10 @@ use App\Models\User;
 
 class GetPostBoundary implements PostInputBoundary
 {
-    private $user;
     private $id;
-    public function __construct($user, $id)
+
+    public function __construct($id)
     {
-        $this->user = $user;
         $this->id = $id;
     }
 
@@ -22,9 +21,9 @@ class GetPostBoundary implements PostInputBoundary
         return $this->id;
     }
 
-    public function getUser(): User
+    public function getUser(): ?User
     {
-        return $this->user;
+        return null;
     }
 
 }
