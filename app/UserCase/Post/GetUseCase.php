@@ -7,6 +7,7 @@ use App\Boundaries\PostInputBoundary;
 use App\Repository\PostRepository;
 use App\ViewModel\GetPostViewModel;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Validation\UnauthorizedException;
 use InvalidArgumentException;
 use TypeError;
 
@@ -26,7 +27,7 @@ class GetUseCase
 
         $postId = $boundary->get('id');
 
-        $post = $this->repository->get($user, $postId);
+        $post = $this->repository->get($postId);
 
         if (!$post) {
             throw new ModelNotFoundException("user: {$user->id} post: {$postId} is not found");

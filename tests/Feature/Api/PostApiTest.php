@@ -4,6 +4,7 @@
 namespace Tests\Feature\Api;
 
 
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -31,5 +32,27 @@ class PostApiTest extends TestCase
         $resp = $this->actingAs($usr)->postJson(route('api.post.store'), ['title' => 'title',]);
 
         $resp->assertStatus(422);
+    }
+
+    public function testSaveGet()
+    {
+        $usr = User::factory()->create();
+        $post = Post::factory()->make();
+        $usr->posts()->save($post);
+
+        $resp = $this->actingAs($usr)->getJson(route('api.post.show', $post->id));
+
+        $resp->assertSuccessful();
+        $resp->assertJson([
+            'id' => $post->id,
+            'title' => $post->title,
+            'body' => $post->body,
+            'created_at' => $post->created_at->format('Y-m-d H:i:s'),
+            'updated_at' => $post->updated_at->format('Y-m-d H:i:s'),
+            'author' => [
+                'name' => $post->author->name,
+                'email' => $post->author->email,
+            ]
+        ]);
     }
 }

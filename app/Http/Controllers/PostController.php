@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Boundaries\GetPostBoundary;
 use App\Http\Requests\WritePostRequest;
+use App\UserCase\Post\GetUseCase;
 use App\UserCase\Post\WriteUseCase;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -48,11 +50,16 @@ class PostController extends Controller
      * Display the specified resource.
      *
      * @param  int  $id
-     * @return Response
+     * @return JsonResponse
      */
-    public function show($id)
+    public function show(Request $request, $id, GetUseCase $useCase)
     {
         //
+
+        $input = new GetPostBoundary($request->user(), $id);
+        $result = $useCase->invoke($input);
+
+        return response()->json($result->display(), 200);
     }
 
     /**

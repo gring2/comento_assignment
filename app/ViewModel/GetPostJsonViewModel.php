@@ -8,14 +8,25 @@ use App\Models\Post;
 
 class GetPostJsonViewModel implements GetPostViewModel
 {
+    private $post;
     public function load(Post $post)
     {
-        // TODO: Implement load() method.
+        $this->post = $post;
     }
 
     public function display()
     {
-        // TODO: Implement display() method.
+        return [
+            'id' => $this->post->id,
+            'title' => $this->post->title,
+            'body' => $this->post->body,
+            'created_at' => $this->post->created_at->format('Y-m-d H:i:s'),
+            'updated_at' => $this->post->created_at->format('Y-m-d H:i:s'),
+            'author' => [
+                'name' => $this->post->author->name,
+                'email' => $this->post->author->email,
+            ]
+        ];
     }
 
 }
